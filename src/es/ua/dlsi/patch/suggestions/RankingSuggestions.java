@@ -8,6 +8,7 @@ package es.ua.dlsi.patch.suggestions;
 import es.ua.dlsi.patch.patches.PatchOperator;
 import es.ua.dlsi.patch.patches.PatchedSegment;
 import es.ua.dlsi.patch.patches.SegmentAlignment;
+import es.ua.dlsi.patch.patches.SubSegmentPair;
 import es.ua.dlsi.patch.tokenisation.TokenizedSegment;
 import es.ua.dlsi.patch.tokenisation.TokenizedSubSegment;
 import es.ua.dlsi.segmentation.Segment;
@@ -91,6 +92,53 @@ public class RankingSuggestions {
                 if(opperators_length != 0)
                     score += num_missaligned_words/opperators_length;
                 //score /= s.getPatches().size();
+
+                ScoredSuggestion suggestion=new ScoredSuggestion(score, s);
+                scoredsuggestions.add(new ScoredSuggestion(score, suggestion));
+            }
+        }
+        return scoredsuggestions;
+    }
+    
+    public static SortedSet<ScoredSuggestion> SourceContext(TokenizedSegment sourceseg,
+            TokenizedSegment tu_source, TokenizedSegment tu_target, Set<PatchedSegment> suggestions){
+
+        ScoredSuggestion emptysuggestion=new ScoredSuggestion(0.0);
+        Comparator<ScoredSuggestion> comparator = emptysuggestion.new LowestComparator();
+
+        SortedSet<ScoredSuggestion> scoredsuggestions=new TreeSet<>(comparator);
+        
+        for(PatchedSegment s: suggestions){
+            if(!s.getPatches().isEmpty()){
+                double score = 0.0;
+                double length = 0.0;
+                for(PatchOperator po: s.getPatches()){
+                    length += po.getSigmas().getPhrase2().getLength();
+                }
+                score = length / tu_source.size();
+
+                ScoredSuggestion suggestion=new ScoredSuggestion(score, s);
+                scoredsuggestions.add(new ScoredSuggestion(score, suggestion));
+            }
+        }
+        return scoredsuggestions;
+    }
+    public static SortedSet<ScoredSuggestion> TargetContext(TokenizedSegment sourceseg,
+            TokenizedSegment tu_source, TokenizedSegment tu_target, Set<PatchedSegment> suggestions){
+
+        ScoredSuggestion emptysuggestion=new ScoredSuggestion(0.0);
+        Comparator<ScoredSuggestion> comparator = emptysuggestion.new LowestComparator();
+
+        SortedSet<ScoredSuggestion> scoredsuggestions=new TreeSet<>(comparator);
+        
+        for(PatchedSegment s: suggestions){
+            if(!s.getPatches().isEmpty()){
+                double score = 0.0;
+                double length = 0.0;
+                for(PatchOperator po: s.getPatches()){
+                    length += po.getTaus().getPhrase2().getLength();
+                }
+                score = length / tu_target.size();
 
                 ScoredSuggestion suggestion=new ScoredSuggestion(score, s);
                 scoredsuggestions.add(new ScoredSuggestion(score, suggestion));
