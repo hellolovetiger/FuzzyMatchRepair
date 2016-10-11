@@ -61,6 +61,17 @@ public class PatchOperatorsCollection {
                 for(String trans: entry.getValue()){
                     List<Word> words = new LinkedList<>();
                     List<SegmentToken> tokenlist = tokenizer.Tokenize(trans, words);
+                    TokenizedSegment tprova = new TokenizedSegment(trans, tokenlist, words);
+                    /*System.out.println(tprova);
+                    System.out.println(trans);
+                    for(SegmentToken stok: tprova.getTokens()){
+                        System.out.print("\t'"+tprova.getOriginal_text().subSequence(stok.offset, stok.offset+stok.length)+"'");
+                        System.out.print("\t");
+                        System.out.print(stok.offset);
+                        System.out.print("\t");
+                        System.out.print(stok.offset+stok.length);
+                        System.out.println();
+                    }*/
                     if(tokdictionary.containsKey(entry.getKey()))
                         tokdictionary.get(entry.getKey()).add(new TokenizedSegment(trans, tokenlist, words));
                     else{
@@ -144,9 +155,21 @@ public class PatchOperatorsCollection {
                 Map<Integer, TokenizedSubSegment> tau_end_position=new HashMap<Integer, TokenizedSubSegment>();
                 tau_end_position.put(patch_end_pos, po.getTaus().getPhrase1());
                 matrix_of_editions.put(patch_init_pos, tau_end_position);
+                /*System.err.println(translation);
+                System.err.println(translation.size());
+                System.err.println(patch_init_pos);
+                System.err.println(patch_end_pos);
+                System.err.println(po.getTaus().getPhrase1());
+                System.err.println();*/
             }
             else{
                 matrix_of_editions.get(patch_init_pos).put(patch_end_pos, po.getTaus().getPhrase1());
+                /*System.err.println(translation);
+                System.err.println(translation.size());
+                System.err.println(patch_init_pos);
+                System.err.println(patch_end_pos);
+                System.err.println(po.getTaus().getPhrase1());
+                System.err.println();*/
             }
         }
         List<Integer> edit_positions=new LinkedList<Integer>(matrix_of_editions.keySet());
