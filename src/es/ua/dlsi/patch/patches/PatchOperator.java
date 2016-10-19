@@ -52,20 +52,61 @@ public class PatchOperator {
     }
     
     public boolean CompatibleSigma(PatchOperator po){
-        Set<Integer> intersection1=new HashSet<>(sigmas.MissmatchingPositionsPhrase1());
+        /*Set<Integer> intersection1=new HashSet<>(sigmas.MissmatchingPositionsPhrase1());
         intersection1.retainAll(po.sigmas.MissmatchingPositionsPhrase1());
         Set<Integer> intersection2=new HashSet<>(sigmas.MissmatchingPositionsPhrase2());
-        intersection2.retainAll(po.sigmas.MissmatchingPositionsPhrase2());
+        intersection2.retainAll(po.sigmas.MissmatchingPositionsPhrase2());*/
+        Set<Integer> union1 = new HashSet<>(sigmas.MissmatchingPositionsPhrase1());
+        union1.addAll(new HashSet<>(sigmas.MissmatchingPositionsPhrase2()));
         
-        return (intersection1.isEmpty() && intersection2.isEmpty());
+        Set<Integer> union2 = new HashSet<>(po.sigmas.MissmatchingPositionsPhrase1());
+        union1.addAll(new HashSet<>(po.sigmas.MissmatchingPositionsPhrase2()));
+        
+        Set<Integer> intersection=new HashSet<>(union1);
+        intersection.retainAll(union2);
+                
+        //return (intersection1.isEmpty() && intersection2.isEmpty());
+        return (intersection.isEmpty());
     }
     
+    
+    
     public boolean CompatibleTau(PatchOperator po){
-        Set<Integer> intersection1=new HashSet<>(taus.MissmatchingPositionsPhrase1());
-        intersection1.retainAll(po.taus.MissmatchingPositionsPhrase1());
-        Set<Integer> intersection2=new HashSet<>(taus.MissmatchingPositionsPhrase2());
-        intersection2.retainAll(po.taus.MissmatchingPositionsPhrase2());
+        //Guessing which positions in the first opperator are edited
+        Set<Integer> union1 = new HashSet<>(taus.MissmatchingPositionsPhrase1());
+        union1.addAll(new HashSet<>(taus.MissmatchingPositionsPhrase2()));
         
-        return (intersection1.isEmpty() && intersection2.isEmpty());
+        //Guessing which positions in the second opperator are edited
+        Set<Integer> union2 = new HashSet<>(po.taus.MissmatchingPositionsPhrase1());
+        union2.addAll(new HashSet<>(po.taus.MissmatchingPositionsPhrase2()));
+        
+        //Augmenting the collection with surrounding positions to avoid opperations
+        //for which we are not sure if they could be overlapping; this is done only
+        //in one of the collections (the larger one)
+        Set<Integer> augmented_union1, augmented_union2;
+        if(union1.size() > union2.size()){
+            augmented_union1 = new HashSet<>();
+            for(int i: union1){
+                augmented_union1.add(i);
+                augmented_union1.add(i+1);
+                augmented_union1.add(i-1);
+            }
+            augmented_union2=union2;
+        }
+        else{
+            augmented_union1=union1;
+            augmented_union2 = new HashSet<>();
+            for(int i: union2){
+                augmented_union2.add(i);
+                augmented_union2.add(i+1);
+                augmented_union2.add(i-1);
+            }
+        }
+        
+        //Detecting overlapping opperations
+        Set<Integer> intersection=new HashSet<>(augmented_union1);
+        intersection.retainAll(augmented_union2);
+        
+        return (intersection.isEmpty());
     }
 }

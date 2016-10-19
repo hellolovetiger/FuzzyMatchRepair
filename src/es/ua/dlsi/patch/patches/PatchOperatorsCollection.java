@@ -61,7 +61,6 @@ public class PatchOperatorsCollection {
                 for(String trans: entry.getValue()){
                     List<Word> words = new LinkedList<>();
                     List<SegmentToken> tokenlist = tokenizer.Tokenize(trans, words);
-                    TokenizedSegment tprova = new TokenizedSegment(trans, tokenlist, words);
                     /*System.out.println(tprova);
                     System.out.println(trans);
                     for(SegmentToken stok: tprova.getTokens()){
@@ -215,6 +214,7 @@ public class PatchOperatorsCollection {
     
     private Set<Set<PatchOperator>> BuildValidPatchCollections(Stack<PatchOperator> remaining_patch_operators,
         PatchOperator next_operator, Set<Set<PatchOperator>> accepted_patch_operators_collections){
+        //Checking for interrupting processing at any moment
         if(!interrupt){
             Set<Set<PatchOperator>> collection_valid_po=new HashSet<Set<PatchOperator>>(accepted_patch_operators_collections);
             for(Set<PatchOperator> po_collection: accepted_patch_operators_collections){
@@ -234,8 +234,9 @@ public class PatchOperatorsCollection {
             if(remaining_patch_operators.isEmpty())
                 return collection_valid_po;
             else{
-                PatchOperator patchop= remaining_patch_operators.pop();
-                return BuildValidPatchCollections(remaining_patch_operators,patchop,collection_valid_po);
+                Stack<PatchOperator> newremaining = (Stack<PatchOperator>)remaining_patch_operators.clone();
+                PatchOperator patchop= newremaining.pop();
+                return BuildValidPatchCollections(newremaining, patchop, collection_valid_po);
             }
         }
         else

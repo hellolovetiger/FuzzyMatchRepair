@@ -8,7 +8,6 @@ package es.ua.dlsi.patch.suggestions;
 import es.ua.dlsi.patch.patches.PatchOperator;
 import es.ua.dlsi.patch.patches.PatchedSegment;
 import es.ua.dlsi.patch.patches.SegmentAlignment;
-import es.ua.dlsi.patch.patches.SubSegmentPair;
 import es.ua.dlsi.patch.tokenisation.TokenizedSegment;
 import es.ua.dlsi.patch.tokenisation.TokenizedSubSegment;
 import es.ua.dlsi.segmentation.Segment;
