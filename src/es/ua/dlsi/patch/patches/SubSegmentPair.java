@@ -273,11 +273,11 @@ public class SubSegmentPair {
         Segment s1=new Segment("a a b b");
         SegmentAlignment alignment=new SegmentAlignment(s1,s2);
         
-        for (int a: alignment.getAlignmentS2S1()){
+        /*for (int a: alignment.getAlignmentS2S1()){
             System.out.print(a);
             System.out.print(" ");
         }
-        System.out.println();
+        System.out.println();*/
         
         /*List<SubSegmentPair> phrase_pairs=MatchingSubSegmentPairs(s1, s2, alignment);
         for (SubSegmentPair p: phrase_pairs){
